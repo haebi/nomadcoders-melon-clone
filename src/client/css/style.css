@@ -1,0 +1,25 @@
+div {
+    /* border: 1px solid black; */
+}
+
+#musicChart {
+    width: 400px;
+}
+
+#musicChart > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#musicChart > div > div:nth-child(1){
+    width: 80px;
+}
+
+#musicChart > div > div:nth-child(3){
+    width: 80px;
+}
+
+#musicChart > div > div:nth-child(2){
+    width: 100%;
+    display: flex;
+}
