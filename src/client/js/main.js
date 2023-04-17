@@ -50,3 +50,53 @@ function getMusicChart()
 
 getMusicChart();
 
+// Login proc
+const loginForm = document.querySelector('#loginForm');
+
+loginForm.addEventListener('submit', async (e) => {
+    console.log("login proc");
+  e.preventDefault();
+
+  const username = loginForm.elements.username.value;
+  const password = loginForm.elements.password.value;
+
+  const response = await fetch('/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  });
+
+  if (response.status === 200) {
+    const { token } = await response.json();
+    localStorage.setItem('token', token);
+    //updateUI();
+    updateLoginUI();
+  }
+});
+
+function updateLoginUI()
+{
+    const logoff = document.getElementById("logoff");
+    const loggedin = document.getElementById("loggedin");
+
+    logoff.classList.add("hide");
+    loggedin.classList.remove("hide");
+}
+
+async function getFavorite()
+{
+    const url = `http://localhost:4000/song/favorite`;
+
+    const token = localStorage.getItem('token');
+
+    await fetch(url, {headers: {Authorization: `${token}`,},})
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+        });   
+}
+
+
+loggedin.classList.add("hide");

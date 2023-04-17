@@ -2,6 +2,10 @@ div {
     /* border: 1px solid black; */
 }
 
+.hide {
+    display: none;
+}
+
 #musicChart {
     width: 400px;
 }

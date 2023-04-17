@@ -2,6 +2,17 @@ extends base
 
 block content
     div
+        div#logoff
+            form#loginForm(method='post' action='/login')
+                div
+                    label(for='username') Username:
+                    input#username(type='text' name='username' required)
+                div
+                    label(for='password') Password:
+                    input#password(type='password' name='password' required)
+                button(type='submit') Login
+        div#loggedin logged in
+    div
     div#musicChart
         p music Chart
 
