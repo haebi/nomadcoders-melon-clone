@@ -1,25 +1,4 @@
-var musicList = [
-  // { id: 'LCpjdohpuEE', title: '노래 제목 3', artist: '아티스트 3' },
-  // { id: 'a4YwJCZRh5M', title: '노래 제목 4', artist: '아티스트 4' },
-  { id: "HaEYUJ2aRHs", title: "Dynamite", artist: "BTS" },
-  { id: "NT8ePWlgx_Y", title: "FAKE LOVE", artist: "BTS" },
-  { id: "NNCBq0JHXsU", title: "Butter", artist: "BTS" },
-];
-
-//  const API_KEY = "AIzaSyArw_mRAMvmnpu76KKuqTtOIk-eTZG00_E";
-
-//   musicList.forEach((item) => {
-//     const videoId = item.id;
-//     const requestUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,status&id=${videoId}&key=${API_KEY}`;
-
-//     fetch(requestUrl)
-//       .then(response => response.json())
-//       .then(data => {
-//         const embeddable = data.items[0].status.embeddable;
-//         console.log(`${videoId}: ${embeddable ? 'Embeddable' : 'Not Embeddable'}`);
-//       })
-//       .catch(error => console.error(error));
-//   });
+var musicList = [];
 
 let yt_iframe = document.querySelector("body > iframe");
 const hbplayer = document.getElementById("hbplayer");

@@ -178,8 +178,8 @@ loginForm.addEventListener("submit", async (e) => {
     const { token } = await response.json();
     localStorage.setItem("token", token);
     localStorage.setItem("username", username);
-    //updateUI();
     updateLoginUI();
+    getFavorite();
   }
 });
 
@@ -211,10 +211,19 @@ async function getFavorite() {
     .then((data) => {
       console.log(data);
 
+      // musicList를 초기화합니다.
+      musicList = [];
+
       for (let i = 0; i < data.length; i++) {
         fav.appendChild(
           _makeFavoriteRow(i + 1, data[i].title, data[i].author, data[i].id)
         );
+
+        musicList.push({
+          id: data[i].id,
+          title: data[i].title,
+          artist: data[i].author,
+        });
       }
     });
 }
