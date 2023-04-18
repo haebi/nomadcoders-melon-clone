@@ -18,6 +18,10 @@ function _makeFavoriteRow(no, title, author, id) {
   const divCol3Span = document.createElement("span");
   const divCol4Span = document.createElement("span");
 
+  const divCol4i = document.createElement("i");
+  divCol4i.classList.add("fas");
+  divCol4i.classList.add("fa-play");
+
   divCol1Span.innerText = no;
   divCol2Span.innerText = title;
   divCol3Span.innerText = author;
@@ -26,7 +30,12 @@ function _makeFavoriteRow(no, title, author, id) {
   divCol1.appendChild(divCol1Span);
   divCol2.appendChild(divCol2Span);
   divCol3.appendChild(divCol3Span);
-  divCol4.appendChild(divCol4Span);
+
+  if (no === "No") {
+    divCol4.appendChild(divCol4Span);
+  } else {
+    divCol4.appendChild(divCol4i);
+  }
 
   divRow.appendChild(divCol1);
   divRow.appendChild(divCol2);
@@ -43,7 +52,8 @@ function _makeFavoriteRow(no, title, author, id) {
 function handleMusicPlay(event) {
   const parentElement = event.currentTarget.parentNode;
   const parentId = parentElement.id;
-  alert(`play: ${parentId}`);
+  //alert(`play: ${parentId}`);
+  player.loadVideoById(parentId);
 }
 
 function handleAddFavorite(event) {
@@ -70,6 +80,14 @@ function _makeChartRow(rank, title, author, played, id) {
   const divCol5Span = document.createElement("span");
   const divCol6Span = document.createElement("span");
 
+  const divCol5i = document.createElement("i");
+  divCol5i.classList.add("fas");
+  divCol5i.classList.add("fa-play");
+
+  const divCol6i = document.createElement("i");
+  divCol6i.classList.add("fas");
+  divCol6i.classList.add("fa-plus-square");
+
   divCol1Span.innerText = rank;
   divCol2Span.innerText = title;
   divCol3Span.innerText = author;
@@ -81,8 +99,18 @@ function _makeChartRow(rank, title, author, played, id) {
   divCol2.appendChild(divCol2Span);
   divCol3.appendChild(divCol3Span);
   divCol4.appendChild(divCol4Span);
-  divCol5.appendChild(divCol5Span);
-  divCol6.appendChild(divCol6Span);
+
+  if (rank === "Rank") {
+    divCol5.appendChild(divCol5Span);
+  } else {
+    divCol5.appendChild(divCol5i);
+  }
+
+  if (rank === "Rank") {
+    divCol6.appendChild(divCol6Span);
+  } else {
+    divCol6.appendChild(divCol6i);
+  }
 
   divRow.appendChild(divCol1);
   divRow.appendChild(divCol2);
@@ -245,6 +273,7 @@ async function checkLoggedIn() {
 
           // 로그인 된 것으로 처리
           updateLoginUI();
+          getFavorite();
         }
       })
       .catch((error) => {

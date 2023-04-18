@@ -1,7 +1,7 @@
 extends base
 
 block content
-    div
+    div#logininfo
         div#logoff
             form#loginForm(method='post' action='/login')
                 div
@@ -12,11 +12,31 @@ block content
                     input#password(type='password' name='password' required)
                 button(type='submit') Login
         div#loggedin logged in
-    div
+    div#hbplayer
+        div#hbcontrol
+            div#art-title
+                div#song-artist
+                span -
+                div#song-title
+            div#time
+                div#elapsed-time
+                div#remaining-time
+            div#progressbar
+            div#buttons
+                div#m_btn_play
+                    span
+                        i.fas.fa-play
+                div#m_btn_pause
+                    span
+                        i.fas.fa-pause
+    div#player
+    div#favorite-title
         p favorite
     div#favorite
-    div
+    div#musicChart-title
         p music Chart
     div#musicChart
+
+
         
 
