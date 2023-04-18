@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 
 // login
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 const app = express();
 const logger = morgan("dev");
@@ -44,78 +44,106 @@ mongoose.connect(process.env.DB_URL, {
   useUnifiedTopology: true,
 });
 
-// song
-const songSchema = new mongoose.Schema({
-  title: { type: String, unique: true },
-  played: Number,
-},{versionKey : false});
+// songs
+const songSchema = new mongoose.Schema(
+  {
+    id: { type: String, unique: true },
+    title: String,
+    author: String,
+    played: Number,
+  },
+  { versionKey: false }
+);
 
-const Song = mongoose.model('song', songSchema);
+const Song = mongoose.model("song", songSchema);
 
-// login
+// // favorites
+// const favoriteSchema = new mongoose.Schema(
+//   {
+//     user: { type: String },
+//     id: { type: String },
+//     title: String,
+//     author: String,
+//   },
+//   { versionKey: false }
+// );
+
+// // user와 id 필드를 unique index로 지정
+// favoriteSchema.index({ user: 1, id: 1 }, { unique: true });
+// const Favorite = mongoose.model("favorite", favoriteSchema);
+
+// favorites
+// user와 id 필드를 unique index로 지정 했는데... 중복으로 데이터가 들어가져서 실패...
+const favoriteSchema = new mongoose.Schema(
+  {
+    key: { type: String, unique: true },
+    user: String,
+    id: String,
+    title: String,
+    author: String,
+  },
+  { versionKey: false }
+);
+
+// user와 id 필드를 unique index로 지정
+const Favorite = mongoose.model("favorite", favoriteSchema);
+
+// users
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: true },
   password: String,
 });
 
-//const User = mongoose.model('User', UserSchema);
-// model('User',...) User 이라는 명칭 사용시 오류
-// OverwriteModelError: Cannot overwrite `User` model once compiled.
-const User = mongoose.model('user', UserSchema);
+const User = mongoose.model("user", UserSchema);
 
 app.get("/top10", (req, res) => {
-  Song.find({}).sort({ played: -1 }).limit(10).exec((err, songs) => {
-    if (err) {
-      console.error(err);
-      res.send(err);
-    } else {
-      //console.log('Top 10 played songs:', songs);
-      const jsonSongs = JSON.stringify(songs);
-      console.log(jsonSongs);
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('Content-Type', 'application/json');
-      res.send(jsonSongs);
-    }
-  });
+  Song.find({})
+    .sort({ played: -1 })
+    .limit(10)
+    .exec((err, songs) => {
+      if (err) {
+        console.error(err);
+        res.send(err);
+      } else {
+        //console.log('Top 10 played songs:', songs);
+        const jsonSongs = JSON.stringify(songs);
+        console.log(jsonSongs);
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Content-Type", "application/json");
+        res.send(jsonSongs);
+      }
+    });
 });
 
 // sample data insert
 app.get("/insert_sample_song", (req, res) => {
-  // 새로운 모델 생성
-  // const songSchema = new mongoose.Schema({
-  //   title: { type: String, unique: true },
-  //   played: Number,
-  // },{versionKey : false});
-
-  // const Song = mongoose.model('song', songSchema);
-
   const sampleList = [
     {
-      title: 'FAKE LOVE - BTS',
-      played: 44,
-    },
-    {
-      title: '달려라 방탄 - BTS',
+      id: "HaEYUJ2aRHs",
+      title: "Dynamite",
+      author: "BTS",
       played: 22,
     },
     {
-      title: 'Permission to Dance - BTS',
+      id: "NT8ePWlgx_Y",
+      title: "FAKE LOVE",
+      author: "BTS",
       played: 33,
     },
     {
-      title: 'Butter - BTS',
+      id: "NNCBq0JHXsU",
+      title: "Butter",
+      author: "BTS",
       played: 11,
-    },
-    {
-      title: 'Dynamite - BTS',
-      played: 55,
     },
   ];
 
   for (let i = 0; i < sampleList.length; i++) {
     // 새로운 데이터 저장
     const newSong = new Song({
+      id: sampleList[i].id,
       title: sampleList[i].title,
+      author: sampleList[i].author,
       played: sampleList[i].played,
     });
 
@@ -123,16 +151,16 @@ app.get("/insert_sample_song", (req, res) => {
       if (err) {
         console.error(err);
       } else {
-        console.log('Saved song:', savedSong);
+        console.log("Saved song:", savedSong);
       }
     });
   }
 
-  res.send('sample data stored.');
+  res.send("sample data stored.");
 });
 
 // 로그인 처리
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   // 입력된 아이디로 사용자 조회
@@ -140,7 +168,7 @@ app.post('/login', async (req, res) => {
 
   // 사용자가 존재하지 않으면 에러 반환
   if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: "User not found" });
   }
 
   // 입력된 패스워드와 사용자 패스워드를 비교
@@ -148,22 +176,22 @@ app.post('/login', async (req, res) => {
 
   // 비밀번호가 일치하지 않으면 에러 반환
   if (!isMatch) {
-    return res.status(401).json({ message: 'Invalid password' });
+    return res.status(401).json({ message: "Invalid password" });
   }
 
   // JWT 토큰 발행
-  const token = jwt.sign({ username: user.username }, 'secretkey');
+  const token = jwt.sign({ username: user.username }, "secretkey");
 
   //test
   console.log(token);
-  const decoded = jwt.verify(token, 'secretkey');
+  const decoded = jwt.verify(token, "secretkey");
   console.log(decoded);
 
   // JWT 토큰을 클라이언트에게 반환
   res.json({ token });
 });
 
-app.get('/song/favorite', async (req, res) => {
+app.get("/song/favorite", async (req, res) => {
   const token = req.headers.authorization;
 
   //test
@@ -172,29 +200,83 @@ app.get('/song/favorite', async (req, res) => {
   // 토큰이 없는 경우, Unauthorized 에러를 반환합니다.
   if (!token) {
     console.log("no token");
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
-    console.log("a1");
     // JWT 토큰을 검증하고, 토큰에 포함된 정보를 디코딩합니다.
-    const decoded = jwt.verify(token, 'secretkey');
-    console.log("a2");
+    const decoded = jwt.verify(token, "secretkey");
     const userId = decoded.userId;
-    console.log("a3");
 
-    // 검증된 토큰을 사용하여, 로그인 상태를 확인하고 응답합니다.
-    // 이 예시에서는 간단히 "OK" 메시지를 반환합니다.
-    return res.status(200).json({ message: 'OK' });
+    Favorite.find({}).exec((err, songs) => {
+      if (err) {
+        console.error(err);
+        res.send(err);
+      } else {
+        //console.log('Top 10 played songs:', songs);
+        const jsonFavorites = JSON.stringify(songs);
+        console.log(jsonFavorites);
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Content-Type", "application/json");
+        res.send(jsonFavorites);
+      }
+    });
+
+    //return res.status(200).json({ message: "OK" });
   } catch (error) {
     // 토큰 검증에 실패한 경우, Unauthorized 에러를 반환합니다.
     console.log("invalid token");
     console.log(error);
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 });
 
-app.get('/insert_sample_user', async (req, res) => {
+// 즐겨찾기 추가
+app.post("/song/favorite/add", async (req, res) => {
+  const { id, username } = req.body;
+  const token = req.headers.authorization;
+  console.log("XXX:" + token);
+
+  // 토큰이 없는 경우, Unauthorized 에러를 반환합니다.
+  if (!token) {
+    console.log("no token");
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (!id) {
+    return res.status(404).json({ message: "Invalid request" });
+  }
+
+  try {
+    // JWT 토큰을 검증하고, 토큰에 포함된 정보를 디코딩합니다.
+    const decoded = jwt.verify(token, "secretkey");
+    //const user = decoded.userId;
+
+    const song = await Song.findOne({ id: id });
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
+    }
+
+    console.log(`DEBUG[/song/favorite/add]: ${username} / ${id}`);
+
+    const newFavorite = new Favorite({
+      key: username + id,
+      user: username,
+      id: id,
+      title: song.title,
+      author: song.author,
+    });
+
+    await newFavorite.save();
+
+    return res.status(200).json({ message: "OK" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed to add favorite" });
+  }
+});
+
+app.get("/insert_sample_user", async (req, res) => {
   //const { username, password } = req.body;
   const username = "demo";
   const password = "1234";
@@ -210,7 +292,7 @@ app.get('/insert_sample_user', async (req, res) => {
 
   await user.save();
 
-  res.json({ message: 'User created' });
+  res.json({ message: "User created" });
 });
 
 export default app;

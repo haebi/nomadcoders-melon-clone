@@ -7,7 +7,7 @@ div {
 }
 
 #musicChart {
-    width: 400px;
+    width: 600px;
 }
 
 #musicChart > div {
@@ -15,15 +15,29 @@ div {
     justify-content: space-between;
 }
 
-#musicChart > div > div:nth-child(1){
-    width: 80px;
-}
-
-#musicChart > div > div:nth-child(3){
-    width: 80px;
+#musicChart > div > div {
+    width: 120px;
 }
 
 #musicChart > div > div:nth-child(2){
+    width: 100%;
+    display: flex;
+}
+
+#favorite {
+    width: 600px;
+}
+
+#favorite > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#favorite > div > div {
+    width: 120px;
+}
+
+#favorite > div > div:nth-child(2){
     width: 100%;
     display: flex;
 }
