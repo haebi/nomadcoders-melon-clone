@@ -133,7 +133,8 @@ function getMusicChart() {
     _makeChartRow("Rank", "Title", "author", "Played", "Play", "Favorite")
   );
 
-  const url = `http://localhost:4000/top10`;
+  //const url = `http://localhost:4000/top10`;
+  const url = `${window.location.href}top10`;
 
   fetch(url)
     .then((response) => response.json())
@@ -202,7 +203,8 @@ async function getFavorite() {
 
   fav.appendChild(_makeFavoriteRow("No", "Title", "author", "Play"));
 
-  const url = `http://localhost:4000/song/favorite`;
+  //const url = `http://localhost:4000/song/favorite`;
+  const url = `${window.location.href}song/favorite`;
 
   const token = localStorage.getItem("token");
 
@@ -237,7 +239,8 @@ async function addFavorite(id) {
     return;
   }
 
-  const url = "http://localhost:4000/song/favorite/add";
+  //const url = "http://localhost:4000/song/favorite/add";
+  const url = `${window.location.href}song/favorite/add`;
 
   try {
     const response = await fetch(url, {
@@ -272,7 +275,9 @@ async function checkLoggedIn() {
 
   if (_token && _username) {
     // 즐겨찾기 가져오기
-    const url = "http://localhost:4000/song/favorite";
+    //const url = "http://localhost:4000/song/favorite";
+    const url = `${window.location.href}song/favorite`;
+
     const token = localStorage.getItem("token");
 
     await fetch(url, { headers: { Authorization: `${token}` } })
