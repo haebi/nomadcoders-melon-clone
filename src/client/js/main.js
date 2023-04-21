@@ -12,20 +12,27 @@ function _makeFavoriteRow(no, title, author, id) {
   const divCol2 = document.createElement("div");
   const divCol3 = document.createElement("div");
   const divCol4 = document.createElement("div");
+  const divCol5 = document.createElement("div");
 
   const divCol1Span = document.createElement("span");
   const divCol2Span = document.createElement("span");
   const divCol3Span = document.createElement("span");
   const divCol4Span = document.createElement("span");
+  const divCol5Span = document.createElement("span");
 
   const divCol4i = document.createElement("i");
   divCol4i.classList.add("fas");
   divCol4i.classList.add("fa-play");
 
+  const divCol5i = document.createElement("i");
+  divCol5i.classList.add("fas");
+  divCol5i.classList.add("fa-minus-square");
+
   divCol1Span.innerText = no;
   divCol2Span.innerText = title;
   divCol3Span.innerText = author;
   divCol4Span.innerText = "PLAY";
+  divCol5Span.innerText = "DEL";
 
   divCol1.appendChild(divCol1Span);
   divCol2.appendChild(divCol2Span);
@@ -33,18 +40,22 @@ function _makeFavoriteRow(no, title, author, id) {
 
   if (no === "No") {
     divCol4.appendChild(divCol4Span);
+    divCol5.appendChild(divCol5Span);
   } else {
     divCol4.appendChild(divCol4i);
+    divCol5.appendChild(divCol5i);
   }
 
   divRow.appendChild(divCol1);
   divRow.appendChild(divCol2);
   divRow.appendChild(divCol3);
   divRow.appendChild(divCol4);
+  divRow.appendChild(divCol5);
 
   divRow.id = id;
 
   divCol4.addEventListener("click", handleMusicPlay);
+  divCol5.addEventListener("click", handleMusicDelete);
 
   return divRow;
 }
@@ -57,12 +68,20 @@ function handleMusicPlay(event) {
   addPlayCount(parentId);
 }
 
+function handleMusicDelete(event) {
+  const parentElement = event.currentTarget.parentNode;
+  const parentId = parentElement.id;
+  //alert(`play: ${parentId}`);
+  delFavorite(parentId);
+  getFavorite();
+}
+
 function handleAddFavorite(event) {
   const parentElement = event.currentTarget.parentNode;
   const parentId = parentElement.id;
   //alert(`favorite: ${parentId}`);
   addFavorite(parentId);
-  getFavorite();
+  //getFavorite();
 }
 
 function _makeChartRow(rank, title, author, played, id) {
@@ -264,12 +283,48 @@ async function addFavorite(id) {
     if (response.status === 200) {
       console.log("OK");
       // 여기에 추가로 처리해야 할 코드 작성
+      getFavorite();
     } else {
       console.log("Failed to add favorite");
     }
   } catch (error) {
     console.error(error);
     console.log("Failed to add favorite");
+  }
+}
+
+async function delFavorite(id) {
+  const _token = localStorage.getItem("token");
+  const _username = localStorage.getItem("username");
+  const _id = id; // 추가할 노래 ID
+
+  if (!(_token && _username && _id)) {
+    return;
+  }
+
+  const url = `${window.location.href}song/favorite/del`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `${_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: _username,
+        id: _id,
+      }),
+    });
+    if (response.status === 200) {
+      console.log("OK");
+      // 여기에 추가로 처리해야 할 코드 작성
+    } else {
+      console.log("Failed del favorite");
+    }
+  } catch (error) {
+    console.error(error);
+    console.log("Failed to del favorite");
   }
 }
 

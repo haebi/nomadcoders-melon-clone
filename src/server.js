@@ -276,6 +276,40 @@ app.post("/song/favorite/add", async (req, res) => {
   }
 });
 
+// 즐겨찾기 추가
+app.post("/song/favorite/del", async (req, res) => {
+  const { id, username } = req.body;
+  const token = req.headers.authorization;
+  console.log("XXX:" + token);
+
+  // 토큰이 없는 경우, Unauthorized 에러를 반환합니다.
+  if (!token) {
+    console.log("no token");
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (!id) {
+    return res.status(404).json({ message: "Invalid request" });
+  }
+
+  try {
+    // JWT 토큰을 검증하고, 토큰에 포함된 정보를 디코딩합니다.
+    const decoded = jwt.verify(token, "secretkey");
+    //const user = decoded.userId;
+    const key = username + id;
+    const result = await Favorite.deleteOne({ key });
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Favorite with key ${key} not found` });
+    }
+    return res.json({ message: `Favorite with key ${key} deleted` });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.get("/insert_sample_user", async (req, res) => {
   //const { username, password } = req.body;
   const username = "demo";
