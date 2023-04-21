@@ -29,7 +29,8 @@ function onYouTubeIframeAPIReady() {
 
 // 플레이어 준비 완료 후 실행할 함수
 function onPlayerReady(event) {
-  event.target.loadVideoById("HaEYUJ2aRHs");
+  if (musicList.length == 0) event.target.loadVideoById("HaEYUJ2aRHs");
+  else event.target.loadVideoById(musicList[currentIndex].id);
   event.target.playVideo();
   readyaaa = 1;
   console.log("onPlayerReady");
@@ -54,7 +55,7 @@ function onPlayerReady(event) {
 
 // 다음 노래 재생
 function playNextSong() {
-  if (currentIndex < musicList.length) {
+  if (currentIndex < musicList.length - 1) {
     currentIndex++;
     player.loadVideoById(musicList[currentIndex].id);
   }
@@ -126,8 +127,14 @@ function formatTime(time) {
   return minutes + ":" + seconds;
 }
 
+const m_btn_backward = document.getElementById("m_btn_backward");
 const m_btn_play = document.getElementById("m_btn_play");
 const m_btn_pause = document.getElementById("m_btn_pause");
+const m_btn_forward = document.getElementById("m_btn_forward");
+
+function handleBackward() {
+  playPrevSong();
+}
 
 function handlePlayVideo() {
   player.playVideo();
@@ -137,8 +144,14 @@ function handlePauseVideo() {
   player.pauseVideo();
 }
 
+function handleForward() {
+  playNextSong();
+}
+
+m_btn_backward.addEventListener("click", handleBackward);
 m_btn_play.addEventListener("click", handlePlayVideo);
 m_btn_pause.addEventListener("click", handlePauseVideo);
+m_btn_forward.addEventListener("click", handleForward);
 
 function handleClick(event) {
   const div = event.currentTarget;
