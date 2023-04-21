@@ -166,7 +166,10 @@ divs.forEach((div) => {
 
 async function addPlayCount(songId) {
   try {
-    const response = await fetch(`/song/played/${songId}`, { method: "GET" });
+    const response = await fetch(
+      `${window.location.href}song/played/${songId}`,
+      { method: "GET" }
+    );
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message);
