@@ -190,7 +190,7 @@ loginForm.addEventListener("submit", async (e) => {
   const username = loginForm.elements.username.value;
   const password = loginForm.elements.password.value;
 
-  const response = await fetch("/login", {
+  const response = await fetch(`${window.location.href}login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
