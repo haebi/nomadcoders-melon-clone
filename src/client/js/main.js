@@ -1,9 +1,6 @@
 //import "../scss/styles.scss";
 
-console.log("hi");
-
 let username = "";
-//alert('hi');
 
 function _makeFavoriteRow(no, title, author, id) {
   const divRow = document.createElement("div");
@@ -359,5 +356,15 @@ async function checkLoggedIn() {
       });
   }
 }
+
+// 로컬 스토리지에서 토큰을 삭제하는 함수
+function handleLogout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+  location.reload();
+}
+
+const logout = document.getElementById("logout");
+logout.addEventListener("click", handleLogout);
 
 checkLoggedIn();

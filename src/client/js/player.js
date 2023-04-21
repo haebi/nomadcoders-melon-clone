@@ -5,7 +5,7 @@ const hbplayer = document.getElementById("hbplayer");
 
 // API 로드
 var tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
+tag.src = "https://www.youtube.com/iframe_api?v=12345";
 var firstScriptTag = document.getElementsByTagName("script")[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -16,6 +16,7 @@ var readyaaa = 0;
 
 // API 로드 후 호출될 함수
 function onYouTubeIframeAPIReady() {
+  console.log("onYouTubeIframeAPIReady");
   player = new YT.Player("player", {
     height: "0",
     width: "0",
@@ -32,6 +33,23 @@ function onPlayerReady(event) {
   event.target.playVideo();
   readyaaa = 1;
   console.log("onPlayerReady");
+
+  // 초단위 갱신
+  setInterval(function () {
+    //console.log("hehehe");
+    // 현재 노래의 현재 위치 가져오기
+    currentTime = player.getCurrentTime();
+    // 경과 시간 계산
+    elapsed = formatTime(currentTime);
+    // 남은 시간 계산
+    remaining = formatTime(totalTime - currentTime);
+    // 경과 시간 업데이트
+    document.getElementById("elapsed-time").textContent = elapsed;
+    // 남은 시간 업데이트
+    document.getElementById("remaining-time").textContent = "-" + remaining;
+    // 프로그래스바 업데이트
+    progressBar.style.width = (currentTime / totalTime) * 100 + "%";
+  }, 1000);
 }
 
 // 다음 노래 재생
@@ -98,23 +116,6 @@ function onPlayerStateChange(event) {
   }
 }
 
-// 초단위 갱신
-setInterval(function () {
-  //console.log("hehehe");
-  // 현재 노래의 현재 위치 가져오기
-  currentTime = player.getCurrentTime();
-  // 경과 시간 계산
-  elapsed = formatTime(currentTime);
-  // 남은 시간 계산
-  remaining = formatTime(totalTime - currentTime);
-  // 경과 시간 업데이트
-  document.getElementById("elapsed-time").textContent = elapsed;
-  // 남은 시간 업데이트
-  document.getElementById("remaining-time").textContent = "-" + remaining;
-  // 프로그래스바 업데이트
-  progressBar.style.width = (currentTime / totalTime) * 100 + "%";
-}, 1000);
-
 // 시간을 포맷하는 함수
 function formatTime(time) {
   var minutes = Math.floor(time / 60);
@@ -138,9 +139,6 @@ function handlePauseVideo() {
 
 m_btn_play.addEventListener("click", handlePlayVideo);
 m_btn_pause.addEventListener("click", handlePauseVideo);
-
-console.log("ready");
-console.log(readyaaa);
 
 function handleClick(event) {
   const div = event.currentTarget;
