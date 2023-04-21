@@ -295,4 +295,34 @@ app.get("/insert_sample_user", async (req, res) => {
   res.json({ message: "User created" });
 });
 
+app.get("/song/played/:id", async (req, res) => {
+  try {
+    const songId = req.params.id;
+    const song = await Song.findOneAndUpdate(
+      { id: songId },
+      { $inc: { played: 1 } },
+      { new: true }
+    );
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
+    }
+    return res.json(song);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/song/played/reset", async (req, res) => {
+  try {
+    const result = await Song.updateMany({}, { played: 0 });
+    return res.json({
+      message: `Played counts reset for ${result.nModified} songs`,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default app;

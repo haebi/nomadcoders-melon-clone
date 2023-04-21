@@ -152,3 +152,19 @@ const divs = document.querySelectorAll(".hblist__content__column_play");
 divs.forEach((div) => {
   div.addEventListener("click", handleClick);
 });
+
+async function addPlayCount(songId) {
+  try {
+    const response = await fetch(`/song/played/${songId}`, { method: "GET" });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+    //const song = await response.json();
+    //console.log("ZXZXZX" + song);
+    getMusicChart();
+    //return song;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -54,6 +54,7 @@ function handleMusicPlay(event) {
   const parentId = parentElement.id;
   //alert(`play: ${parentId}`);
   player.loadVideoById(parentId);
+  addPlayCount(parentId);
 }
 
 function handleAddFavorite(event) {
@@ -129,6 +130,12 @@ function _makeChartRow(rank, title, author, played, id) {
 
 function getMusicChart() {
   const mc = document.querySelector("#musicChart");
+
+  // 기존에 로드된 요소 모두 제거
+  while (mc.firstChild) {
+    mc.removeChild(mc.firstChild);
+  }
+
   mc.appendChild(
     _makeChartRow("Rank", "Title", "author", "Played", "Play", "Favorite")
   );
